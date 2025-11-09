@@ -108,6 +108,8 @@ if st.session_state.is_processing and not has_interrupted_items:
     processed_files = []
     reports_collected = []
     workflow_interrupted = False
+    current_file_basename = None
+    current_step = None
     
     try:
         # Run workflow with checkpoints
@@ -153,24 +155,34 @@ if st.session_state.is_processing and not has_interrupted_items:
                     # Skip index step entirely - it should only run after resume
                     if step == "index":
                         continue
-                        
+                    
+                    # Track current step
+                    current_step = step
+                    
+                    # Get current file being processed from state
+                    if isinstance(output, dict):
+                        # Always check for current_item in the output (which is the state after the node)
+                        current_item = output.get("current_item", {})
+                        if current_item:
+                            new_basename = current_item.get("basename", "Unknown")
+                            if new_basename and new_basename != "Unknown":
+                                current_file_basename = new_basename
+                                if current_file_basename not in processed_files:
+                                    processed_files.append(current_file_basename)
+                    
                     # Update progress
                     if step in steps:
                         step_idx = steps.index(step)
                         progress = (step_idx + 1) / len(steps)
                         progress_bar.progress(progress)
                         
-                        status_text.info(f"Current Step: {step_names.get(step, step)}")
-                        
-                        # Show current file being processed
-                        if step in ["extract", "translate", "validate"]:
-                            if isinstance(output, dict):
-                                current_item = output.get("current_item", {})
-                                if current_item:
-                                    basename = current_item.get("basename", "Unknown")
-                                    if basename not in processed_files:
-                                        processed_files.append(basename)
-                                    step_details.success(f"Processing: {basename}")
+                        # Show current step with file name
+                        step_display = step_names.get(step, step)
+                        if current_file_basename and current_file_basename != "Unknown":
+                            status_text.info(f"Current Step: {step_display} - {current_file_basename}")
+                            step_details.success(f"Processing: {current_file_basename}")
+                        else:
+                            status_text.info(f"Current Step: {step_display}")
                     
                     # Collect reports
                     if step == "report":
