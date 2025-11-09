@@ -4,7 +4,7 @@ from pathlib import Path
 import streamlit as st
 from langchain_core.messages import HumanMessage, AIMessage
 
-sys.path.append(str(Path(__file__).resolve().parents[1]))
+sys.path.append(str(Path(__file__).resolve().parents[2]))
 from langgraph_workflows.chatbot_workflow import build_chatbot, retrieve_all_threads, generate_thread_id, get_thread_preview, save_thread_title, update_thread_timestamp
 
 
