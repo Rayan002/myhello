@@ -1,0 +1,75 @@
+[
+
+    {
+
+        "vendor_id": "VEND-001",
+
+        "vendor_name": "Global Logistics Ltd",
+
+        "country": "UK",
+
+        "currency": "USD"
+
+    },
+
+    {
+
+        "vendor_id": "VEND-002",
+
+        "vendor_name": "BlueOcean Transport Co.",
+
+        "country": "USA",
+
+        "currency": "USD"
+
+    },
+
+    {
+
+        "vendor_id": "VEND-003",
+
+        "vendor_name": "Transporte Ibérico S.A.",
+
+        "country": "Spain",
+
+        "currency": "EUR"
+
+    },
+
+    {
+
+        "vendor_id": "VEND-004",
+
+        "vendor_name": "HafenLogistik GmbH",
+
+        "country": "Germany",
+
+        "currency": "EUR"
+
+    },
+
+    {
+
+        "vendor_id": "VEND-005",
+
+        "vendor_name": "SwiftMove Couriers",
+
+        "country": "USA",
+
+        "currency": "USD"
+
+    },
+
+    {
+
+        "vendor_id": "VEND-006",
+
+        "vendor_name": "OceanFreight Pvt Ltd",
+
+        "country": "India",
+
+        "currency": "INR"
+
+    }
+
+]

@@ -1,0 +1,135 @@
+[
+
+    {
+
+        "item_code": "SKU-001",
+
+        "category": "Packaging",
+
+        "uom": "roll",
+
+        "gst_rate": 10
+
+    },
+
+    {
+
+        "item_code": "SKU-002",
+
+        "category": "Safety",
+
+        "uom": "pair",
+
+        "gst_rate": 10
+
+    },
+
+    {
+
+        "item_code": "SKU-003",
+
+        "category": "Safety",
+
+        "uom": "piece",
+
+        "gst_rate": 10
+
+    },
+
+    {
+
+        "item_code": "SKU-101",
+
+        "category": "Logistics",
+
+        "uom": "piece",
+
+        "gst_rate": 10
+
+    },
+
+    {
+
+        "item_code": "SKU-201",
+
+        "category": "Packaging",
+
+        "uom": "box",
+
+        "gst_rate": 10
+
+    },
+
+    {
+
+        "item_code": "SKU-202",
+
+        "category": "Packaging",
+
+        "uom": "label",
+
+        "gst_rate": 10
+
+    },
+
+    {
+
+        "item_code": "SKU-301",
+
+        "category": "Transport",
+
+        "uom": "crate",
+
+        "gst_rate": 10
+
+    },
+
+    {
+
+        "item_code": "SKU-302",
+
+        "category": "Safety",
+
+        "uom": "vest",
+
+        "gst_rate": 10
+
+    },
+
+    {
+
+        "item_code": "SKU-401",
+
+        "category": "Charges",
+
+        "uom": "service",
+
+        "gst_rate": 10
+
+    },
+
+    {
+
+        "item_code": "SKU-402",
+
+        "category": "Packaging",
+
+        "uom": "box",
+
+        "gst_rate": 10
+
+    },
+
+    {
+
+        "item_code": "SKU-501",
+
+        "category": "Transport",
+
+        "uom": "service",
+
+        "gst_rate": 10
+
+    }
+
+]

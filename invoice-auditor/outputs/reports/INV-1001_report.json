@@ -1,0 +1,44 @@
+{
+  "basename": "01",
+  "overview": "Invoice 01 shows a unit price mismatch on Line 1 for SKU-002, with the invoice price of 3.5 differing from the PO price of 3.0 by 16.67%. No missing fields or other discrepancies were identified, and the translation confidence is high at 0.95. Despite the high confidence, the price discrepancy necessitates a manual review.",
+  "recommendation": "Manual Review",
+  "discrepancy_summary": [],
+  "missing_fields": [],
+  "translation_confidence": 0.95,
+  "issues": [
+    "Line 1: Unit price mismatch for SKU-002 (Inv: 3.5, PO: 3.0, Diff: 16.67%)"
+  ],
+  "extracted_data": {
+    "invoice_number": "INV-1001",
+    "invoice_date": "2025-03-14",
+    "vendor_name": "Global Logistics Ltd",
+    "currency": "USD",
+    "subtotal": 1470.0,
+    "tax": 147.0,
+    "total": 1617.0,
+    "po_number": "PO-1001",
+    "line_items": [
+      {
+        "item_code": "SKU-001",
+        "description": "Pallet Wrapping Film",
+        "qty": 50.0,
+        "unit_price": 12.0,
+        "total": 600.0
+      },
+      {
+        "item_code": "SKU-002",
+        "description": "Industrial Gloves",
+        "qty": 120.0,
+        "unit_price": 3.5,
+        "total": 420.0
+      },
+      {
+        "item_code": "SKU-003",
+        "description": "Safety Helmets",
+        "qty": 30.0,
+        "unit_price": 15.0,
+        "total": 450.0
+      }
+    ]
+  }
+}

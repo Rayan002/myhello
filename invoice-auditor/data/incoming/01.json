@@ -1,0 +1,13 @@
+{
+
+    "sender": "accounts@globallogistics.com",
+  
+    "subject": "Invoice INV-1001 for PO-1001",
+  
+    "received_timestamp": "2025-03-14T09:32:00Z",
+  
+    "language": "en",
+  
+    "attachments": ["INV_EN_001.pdf"]
+  
+  }

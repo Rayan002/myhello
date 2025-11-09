@@ -1,0 +1,93 @@
+# =============================================================
+# AI Invoice Auditor – Validation Rules Configuration
+# =============================================================
+# This file defines the business and data validation rules
+# applied by the Invoice Data Validation Agent and Business Validation Agent.
+# ============================================================= 
+
+# -------------------------------------------------------------
+# 1. General Invoice Requirements
+# -------------------------------------------------------------
+required_fields:
+  header:
+    - invoice_no
+    - po_number
+    - invoice_date
+    - vendor_name
+    - currency
+    - tax
+    - total_amount
+  line_item:
+    - item_code
+    - description
+    - qty
+    - unit_price
+    - total
+
+# -------------------------------------------------------------
+# 2. Field Data Type Rules
+# -------------------------------------------------------------
+data_types:
+  invoice_no: str
+  invoice_date: date
+  vendor_id: str
+  currency: str
+  total_amount: float
+  qty: float
+  unit_price: float
+  total: float
+
+# -------------------------------------------------------------
+# 3. Business Validation Thresholds
+# -------------------------------------------------------------
+tolerances:
+  # Maximum allowed deviation when comparing invoice vs ERP
+  price_difference_percent: 5       # ±5% tolerance in unit price
+  quantity_difference_percent: 0    # Quantity must match exactly
+  tax_difference_percent: 2         # ±2% tolerance for tax amounts
+
+# -------------------------------------------------------------
+# 4. Currency Validation Rules
+# -------------------------------------------------------------
+accepted_currencies:
+  - USD
+  - EUR
+  - INR
+  - GBP
+
+# Define fallback mapping for currency symbols → ISO codes
+currency_symbol_map:
+  "$": "USD"
+  "€": "EUR"
+  "₹": "INR"
+  "£": "GBP"
+
+# -------------------------------------------------------------
+# 5. Validation Policies
+# -------------------------------------------------------------
+validation_policies:
+  # Missing mandatory field handling
+  missing_field_action: "flag"
+  # If totals mismatch beyond tolerance
+  total_mismatch_action: "manual_review"
+  # For currency not in accepted list
+  invalid_currency_action: "reject"
+  # Auto-approval threshold (if no discrepancy & translation confidence ≥ 0.95)
+  auto_approve_confidence_threshold: 0.95
+
+# -------------------------------------------------------------
+# 6. Reporting Parameters
+# -------------------------------------------------------------
+reporting:
+  include_translation_confidence: true
+  include_discrepancy_summary: true
+  report_format: "HTML"
+  output_dir: "./outputs/reports"
+
+# -------------------------------------------------------------
+# 7. Logging and Audit Settings
+# -------------------------------------------------------------
+logging:
+  enable_audit_log: true
+  log_file: "./logs/invoice_auditor.log"
+  log_level: "INFO"

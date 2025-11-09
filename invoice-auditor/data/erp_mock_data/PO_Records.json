@@ -1,0 +1,229 @@
+[
+
+    {
+
+        "po_number": "PO-1001",
+
+        "vendor_id": "VEND-001",
+
+        "line_items": [
+
+            {
+
+                "item_code": "SKU-001",
+
+                "description": "Pallet Wrapping Film",
+
+                "qty": 50,
+
+                "unit_price": 12.00,
+
+                "currency": "USD"
+
+            },
+
+            {
+
+                "item_code": "SKU-002",
+
+                "description": "Industrial Gloves",
+
+                "qty": 120,
+
+                "unit_price": 3.00,
+
+                "currency": "USD"
+
+            },
+
+            {
+
+                "item_code": "SKU-003",
+
+                "description": "Safety Helmets",
+
+                "qty": 30,
+
+                "unit_price": 15.00,
+
+                "currency": "USD"
+
+            }
+
+        ]
+
+    },
+
+    {
+
+        "po_number": "PO-1002",
+
+        "vendor_id": "VEND-002",
+
+        "line_items": [
+
+            {
+
+                "item_code": "SKU-101",
+
+                "description": "Container Seals",
+
+                "qty": 200,
+
+                "unit_price": 1.25,
+
+                "currency": "USD"
+
+            }
+
+        ]
+
+    },
+
+    {
+
+        "po_number": "PO-1003",
+
+        "vendor_id": "VEND-003",
+
+        "line_items": [
+
+            {
+
+                "item_code": "SKU-201",
+
+                "description": "Cajas de carton",
+
+                "qty": 100,
+
+                "unit_price": 2.50,
+
+                "currency": "EUR"
+
+            },
+
+            {
+
+                "item_code": "SKU-202",
+
+                "description": "Etiquetas adhesivas",
+
+                "qty": 300,
+
+                "unit_price": 0.30,
+
+                "currency": "EUR"
+
+            }
+
+        ]
+
+    },
+
+    {
+
+        "po_number": "PO-1004",
+
+        "vendor_id": "VEND-004",
+
+        "line_items": [
+
+            {
+
+                "item_code": "SKU-301",
+
+                "description": "Transportkisten",
+
+                "qty": 40,
+
+                "unit_price": 25.00,
+
+                "currency": "EUR"
+
+            },
+
+            {
+
+                "item_code": "SKU-302",
+
+                "description": "Sicherheitswesten",
+
+                "qty": 60,
+
+                "unit_price": 10.00,
+
+                "currency": "EUR"
+
+            }
+
+        ]
+
+    },
+
+    {
+
+        "po_number": "PO-1005",
+
+        "vendor_id": "VEND-005",
+
+        "line_items": [
+
+            {
+
+                "item_code": "SKU-401",
+
+                "description": "Fuel Surcharge",
+
+                "qty": 1,
+
+                "unit_price": 120.00,
+
+                "currency": "USD"
+
+            },
+
+            {
+
+                "item_code": "SKU-402",
+
+                "description": "Express Delivery Boxes",
+
+                "qty": 25,
+
+                "unit_price": 4.50,
+
+                "currency": "USD"
+
+            }
+
+        ]
+
+    },
+
+    {
+
+        "po_number": "PO-1006",
+
+        "vendor_id": "VEND-006",
+
+        "line_items": [
+
+            {
+
+                "item_code": "SKU-501",
+
+                "description": "Container Transport",
+
+                "qty": 5,
+
+                "unit_price": 8000.00,
+
+                "currency": "INR"
+
+            }
+
+        ]
+
+    }
+
+]
