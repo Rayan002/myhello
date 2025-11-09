@@ -1,2 +1,0 @@
-2025-11-09 15:17:28 | ERROR | langgraph_workflows.workflow:node_index:385 | ❌ Indexing error for 01: No module named 'langchain_huggingface'
-2025-11-09 15:28:02 | ERROR | langgraph_workflows.workflow:node_index:385 | ❌ Indexing error for 01: Could not import sentence_transformers python package. Please install it with `pip install sentence-transformers`.

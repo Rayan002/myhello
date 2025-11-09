@@ -1,0 +1,7 @@
+{
+    "sender": "rechnung@hafenlogistik.de",
+    "subject": "Rechnung RE-2025-004 - Bestellung PO-1004",
+    "received_timestamp": "2025-05-02T11:00:00Z",
+    "language": "de",
+    "attachments": ["INV_DE_004.pdf"]
+}

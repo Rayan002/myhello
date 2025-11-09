@@ -15,26 +15,27 @@ st.title("View Reports")
 st.markdown("Browse and review all generated invoice validation reports.")
 st.markdown("---")
 
-def _get_feedback_file():
-    project_root = Path(__file__).resolve().parents[2]
-    return project_root / "outputs" / "human_feedback.json"
-
-def _load_feedback():
-    feedback_file = _get_feedback_file()
-    if feedback_file.exists():
-        try:
-            with open(feedback_file, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            return {}
-    return {}
-
-def _save_feedback(feedback_dict):
-    feedback_file = _get_feedback_file()
-    feedback_file.parent.mkdir(parents=True, exist_ok=True)
+def _load_feedback_from_report(json_path: str) -> str:
+    """Load human feedback from the report JSON file."""
+    if not json_path or not Path(json_path).exists():
+        return ""
     try:
-        with open(feedback_file, "w", encoding="utf-8") as f:
-            json.dump(feedback_dict, f, indent=2, ensure_ascii=False)
+        with open(json_path, "r", encoding="utf-8") as f:
+            report_data = json.load(f)
+            return report_data.get("human_feedback", "")
+    except Exception:
+        return ""
+
+def _save_feedback_to_report(json_path: str, feedback: str):
+    """Save human feedback to the report JSON file."""
+    if not json_path or not Path(json_path).exists():
+        return
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            report_data = json.load(f)
+        report_data["human_feedback"] = feedback
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(report_data, f, indent=2, ensure_ascii=False)
     except Exception:
         pass
 
@@ -258,8 +259,8 @@ else:
             with tab4:
                 st.subheader("Human Feedback")
                 
-                feedback_data = _load_feedback()
-                existing_feedback = feedback_data.get(basename, "")
+                json_path = report.get("json_path", "")
+                existing_feedback = _load_feedback_from_report(json_path)
                 
                 if existing_feedback:
                     st.success("Feedback Recorded:")
@@ -277,10 +278,11 @@ else:
                 )
                 
                 if st.button("Save Feedback", key=f"save_view_{basename}"):
-                    feedback_data = _load_feedback()
-                    feedback_data[basename] = feedback
-                    _save_feedback(feedback_data)
-                    st.success("Feedback saved!")
-                    st.rerun()
+                    if json_path:
+                        _save_feedback_to_report(json_path, feedback)
+                        st.success("Feedback saved!")
+                        st.rerun()
+                    else:
+                        st.error("Error: Report JSON path not found")
             
             st.markdown("---")

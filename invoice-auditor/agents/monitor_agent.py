@@ -41,11 +41,6 @@ def check_for_new_invoices(
     incoming_dir: Optional[Path] = None,
     ledger_file: Optional[Path] = None,
 ) -> List[Dict]:
-    """
-    Scan the incoming directory for new files with matching metadata.json.
-    Supports: .pdf, .docx, .png, .jpg, .jpeg + .json pairs.
-    Maintains a JSON ledger and returns list with basename, paths, metadata, and text.
-    """
     inbox = incoming_dir or _incoming_dir()
     ledger = ledger_file or _ledger_path()
 
@@ -54,10 +49,7 @@ def check_for_new_invoices(
     state = _load_ledger(ledger)
     seen = set(state.get("seen_basenames", []))
 
-    # Supported file extensions
     supported_extensions = {".pdf", ".docx", ".png", ".jpg", ".jpeg"}
-
-    # Collect basenames from all supported files and filter by presence of matching JSON
     basenames = []
     for entry in os.listdir(inbox):
         file_path = Path(entry)
@@ -69,9 +61,8 @@ def check_for_new_invoices(
 
     new_basenames = [b for b in basenames if b not in seen]
 
-    results: List[Dict] = []
+    results = []
     for base in new_basenames:
-        # Find the actual file (could be pdf, docx, or image)
         file_path = None
         for ext in supported_extensions:
             candidate = inbox / f"{base}{ext}"
@@ -83,28 +74,21 @@ def check_for_new_invoices(
             continue
 
         meta_path = inbox / f"{base}.json"
-
-        # Determine file type
         file_type = file_path.suffix.lower().replace(".", "")
 
-        # Only pass paths - extraction will happen in extractor agent
-        results.append(
-            {
-                "basename": base,
-                "file_path": str(file_path),
-                "metadata_path": str(meta_path),
-                "file_type": file_type,  # pdf, docx, png, jpg, etc.
-            }
-        )
+        results.append({
+            "basename": base,
+            "file_path": str(file_path),
+            "metadata_path": str(meta_path),
+            "file_type": file_type,
+        })
 
-    # Update ledger with all paired basenames (new and existing)
     updated_seen = sorted(set(seen).union(basenames))
     _save_ledger(ledger, updated_seen)
 
     return results
 
 
-# Helper utilities for UI
 def get_incoming_dir() -> Path:
     return _incoming_dir()
 
@@ -128,9 +112,6 @@ def peek_new_basenames() -> List[str]:
 
 
 def save_uploaded_files(files: List, errors: List[str]) -> List[str]:
-    """Save uploaded files to incoming dir. Ensures metadata JSON exists for binary files.
-    Returns list of saved basenames; appends errors for missing metadata.
-    """
     inbox = _incoming_dir()
     inbox.mkdir(parents=True, exist_ok=True)
     # Collect by basename

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Validation Report - 04</title>
+    <style>
+        :root {
+            --text-dark: #222;
+            --text-medium: #333;
+            --bg-light: #f7f7f7;
+            --card-bg: #fff;
+            --border-light: #eee;
+            --shadow-light: rgba(0, 0, 0, 0.05);
+
+            /* Status colors */
+            --approve-bg: #d4edda;
+            --approve-text: #155724;
+            --manual-review-bg: #fff3cd;
+            --manual-review-text: #856404;
+            --reject-bg: #f8d7da;
+            --reject-text: #721c24;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-medium);
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-light);
+            border-radius: 8px 8px 0 0;
+            box-shadow: var(--shadow-light) 0px 2px 4px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        main {
+            padding-top: 10px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-light) 0px 2px 4px;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .overall-section {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .overall-section h2 {
+            border-bottom: none;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        .badge.approve {
+            background-color: var(--approve-bg);
+            color: var(--approve-text);
+        }
+
+        .badge.manual-review {
+            background-color: var(--manual-review-bg);
+            color: var(--manual-review-text);
+        }
+
+        .badge.reject {
+            background-color: var(--reject-bg);
+            color: var(--reject-text);
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 25px;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        .key-info-item {
+            margin-bottom: 8px;
+        }
+
+        .key-info-item strong {
+            display: inline-block;
+            min-width: 120px; /* Align values */
+            color: var(--text-dark);
+        }
+
+        .translation-confidence {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+            .container {
+                margin: 20px auto;
+                padding: 0 15px;
+            }
+            header {
+                padding: 20px 25px;
+            }
+            header h1 {
+                font-size: 24px;
+            }
+            .card {
+                padding: 20px 25px;
+            }
+            h2 {
+                font-size: 18px;
+                margin-bottom: 10px;
+                padding-bottom: 8px;
+            }
+            .badge {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            .key-info-item strong {
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Invoice Validation Report - 04</h1>
+        </header>
+
+        <main>
+            <section class="card overall-section">
+                <h2>Overall Recommendation</h2>
+                <div class="badge manual-review">Manual Review</div>
+            </section>
+
+            <section class="card">
+                <h2>Overview</h2>
+                <p>Invoice 04 has a high translation confidence of 0.95. However, a critical vendor name mismatch was identified between the invoice ('Harbor Logistics GmbH') and the purchase order ('HafenLogistik GmbH'). No other discrepancies or missing fields were found. Due to the vendor name discrepancy, the invoice requires further manual review to verify the vendor identity and ensure compliance with the purchase order.</p>
+            </section>
+
+            <section class="card">
+                <h2>Key Information</h2>
+                <div class="key-info-item"><strong>Invoice Number:</strong> RE-2025-004</div>
+                <div class="key-info-item"><strong>Invoice Date:</strong> 2025-05-02</div>
+                <div class="key-info-item"><strong>Vendor Name:</strong> Harbor Logistics GmbH</div>
+                <div class="key-info-item"><strong>Total:</strong> EUR 1760.00</div>
+                <div class="key-info-item"><strong>PO Number:</strong> PO-1004</div>
+            </section>
+
+            <section class="card">
+                <h2>Issues</h2>
+                <ul>
+                    <li>Vendor name mismatch: Invoice 'Harbor Logistics GmbH' vs PO 'HafenLogistik GmbH'</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>Discrepancy Summary</h2>
+                <p>No discrepancies.</p>
+            </section>
+
+            <section class="card">
+                <h2>Missing Fields</h2>
+                <p>All fields present.</p>
+            </section>
+
+            <section class="card">
+                <h2>Translation Confidence</h2>
+                <p><span class="translation-confidence">95%</span></p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

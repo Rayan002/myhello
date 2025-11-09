@@ -1,12 +1,12 @@
 {
   "basename": "01",
-  "overview": "Invoice 01 shows a unit price mismatch on Line 1 for SKU-002, with the invoice price of 3.5 differing from the PO price of 3.0 by 16.67%. No missing fields or other discrepancies were identified, and the translation confidence is high at 0.95. Despite the high confidence, the price discrepancy necessitates a manual review.",
+  "overview": "Invoice 01 has a high translation confidence of 0.95. However, a significant discrepancy was identified: a unit price mismatch for 'SKU-002' on Line 1, where the invoice price (3.5) differs from the PO price (3.0) by 16.67%. No missing required fields were found. Due to this unit price discrepancy, the invoice requires manual review.",
   "recommendation": "Manual Review",
   "discrepancy_summary": [],
   "missing_fields": [],
   "translation_confidence": 0.95,
   "issues": [
-    "Line 1: Unit price mismatch for SKU-002 (Inv: 3.5, PO: 3.0, Diff: 16.67%)"
+    "Line 1: Unit price mismatch for 'SKU-002' (Inv: 3.5, PO: 3.0, Diff: 16.67%)"
   ],
   "extracted_data": {
     "invoice_number": "INV-1001",
@@ -40,5 +40,6 @@
         "total": 450.0
       }
     ]
-  }
+  },
+  "human_feedback": "hello"
 }

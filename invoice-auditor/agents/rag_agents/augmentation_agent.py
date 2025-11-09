@@ -1,8 +1,5 @@
-"""
-Augmentation Agent - simple rerank/dedupe and context formatting.
-"""
 from typing import List, Dict, Any
-from langchain_core.prompts import ChatPromptTemplate  # type: ignore
+from langchain_core.prompts import ChatPromptTemplate
 
 
 def format_context(chunks: List[Dict[str, Any]]) -> str:
@@ -14,11 +11,8 @@ def format_context(chunks: List[Dict[str, Any]]) -> str:
 
 
 def grade_documents(question: str, ctx: List[Dict[str, Any]]) -> str:
-   """Ask LLM to grade if retrieved docs are sufficient for the question.
-   Returns {decision: 'good'|'bad', reason: str}.
-   """
    if not ctx:
-       return {"decision": "bad", "reason": "no documnets"}
+       return {"decision": "bad", "reason": "no documents"}
    from langchain_google_genai import ChatGoogleGenerativeAI
    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
    prompt = ChatPromptTemplate.from_messages([

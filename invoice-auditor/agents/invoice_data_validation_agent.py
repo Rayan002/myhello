@@ -1,6 +1,3 @@
-"""
-Invoice Data Validation - Prompt-based JSON echo with appended validation_remarks.
-"""
 import json
 from pathlib import Path
 from typing import Dict, Any
@@ -9,7 +6,6 @@ from dotenv import load_dotenv
 
 
 def _load_rules() -> Dict[str, Any]:
-    """Load validation rules from configs/rules.yaml."""
     path = Path(__file__).resolve().parents[1] / "configs" / "rules.yaml"
     if not path.exists():
         return {}
@@ -21,7 +17,7 @@ def _load_rules() -> Dict[str, Any]:
 
 
 def _build_stage1_prompt():
-    from langchain_core.prompts import PromptTemplate  # type: ignore
+    from langchain_core.prompts import PromptTemplate
     return PromptTemplate.from_template(
         (
             "\n   You are performing Stage 1 Invoice Data Validation.\n\n"
@@ -66,8 +62,8 @@ def _build_stage1_prompt():
 
 
 def _validate_with_llm_echo(translated_invoice: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    from langchain_google_genai import ChatGoogleGenerativeAI  # type: ignore
-    from langchain_core.output_parsers import JsonOutputParser  # type: ignore
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain_core.output_parsers import JsonOutputParser
     load_dotenv()
     
     model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
@@ -84,7 +80,6 @@ def _validate_with_llm_echo(translated_invoice: Dict[str, Any], rules: Dict[str,
 
 
 def validate_invoice_data_agent(translated_invoice: Dict[str, Any]) -> Dict[str, Any]:
-    """Stage 1 validation: returns the echoed invoice JSON with appended `validation_remarks`."""
     load_dotenv()
     if not os.getenv("GOOGLE_API_KEY"):
         raise RuntimeError("GOOGLE_API_KEY is required for invoice data validation")

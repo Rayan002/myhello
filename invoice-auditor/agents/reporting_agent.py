@@ -1,6 +1,3 @@
-"""
-Reporting - LLM for system JSON and LLM for HTML generation (no Jinja, no PDF).
-"""
 import json
 import os
 from pathlib import Path
@@ -10,7 +7,6 @@ from agents.report_generation_agent import generate_html_report
 
 
 class SystemReport(BaseModel):
-    """JSON for system use (LLM-produced concise summary)."""
     basename: str = Field(description="File basename")
     overview: str = Field(description="Detailed Summary of the invoice and validation outcome")
     recommendation: str = Field(description="Approve / Manual Review / Reject")
@@ -22,14 +18,12 @@ class SystemReport(BaseModel):
 
 
 class FinalReport(BaseModel):
-    """Final output structure with required three keys."""
     json: SystemReport = Field(description="JSON report for system use")
     report: str = Field(description="Human-readable report (HTML)")
     recommendation: str = Field(description="Approve / Manual Review / Reject")
 
 
 def _load_rules() -> Dict[str, Any]:
-    """Load validation rules from configs/rules.yaml."""
     path = Path(__file__).resolve().parents[1] / "configs" / "rules.yaml"
     if not path.exists():
         return {}
@@ -45,15 +39,13 @@ def _project_reports_dir() -> Path:
 
 
 def generate_reports_with_llm(validated: List[Dict]) -> List[Dict]:
-    """Generate system JSON via LLM and HTML via LLM agent. Save JSON+HTML under outputs/reports at project root."""
     if not validated:
         return []
-    output: List[Dict] = []
+    output = []
     rules = _load_rules()
 
-    # Compact summary chain
-    from langchain_google_genai import ChatGoogleGenerativeAI  # type: ignore
-    from langchain_core.prompts import ChatPromptTemplate  # type: ignore
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain_core.prompts import ChatPromptTemplate
     from dotenv import load_dotenv
 
     load_dotenv()
@@ -94,16 +86,14 @@ def generate_reports_with_llm(validated: List[Dict]) -> List[Dict]:
         basename = item.get("basename") or (entry.get("extraction") or {}).get("invoice_number", "")
         extraction = entry.get("extraction", {})
 
-        # Extract messages from Discrepancy objects
         discrepancies_msgs = []
         for d in business_validation.get("discrepancies", []):
             if isinstance(d, dict):
                 msg = d.get("message", "")
                 if msg:
                     discrepancies_msgs.append(msg)
-            elif hasattr(d, "message"):  # Pydantic model
-                if d.message:
-                    discrepancies_msgs.append(d.message)
+            elif hasattr(d, "message") and d.message:
+                discrepancies_msgs.append(d.message)
         policies = rules.get("validation_policies", {})
         missing_fields = (entry.get("data_validation") or {}).get("validation_details", {}).get("field_completeness", {}).get("missing_fields", [])
 
@@ -117,30 +107,24 @@ def generate_reports_with_llm(validated: List[Dict]) -> List[Dict]:
                 "policies": json.dumps(policies, ensure_ascii=False),
             })
             sys_json = sys_json_obj.model_dump() if hasattr(sys_json_obj, "model_dump") else sys_json_obj
-            # Add extracted data to the JSON
             sys_json["extracted_data"] = extraction
         except Exception as exc:
-            # No fallback: return structured error entry
             output.append({
                 "error": f"Reporting error: {str(exc)}",
                 "input_basename": basename,
             })
             continue
 
-        # HTML via generation agent
         recommendation = sys_json.get("recommendation", "Manual Review")
         html = generate_html_report(basename=basename, extraction=extraction, system_json=sys_json)
 
-        # Save under project root
         output_dir = _project_reports_dir()
         output_dir.mkdir(parents=True, exist_ok=True)
         invoice_number = extraction.get("invoice_number", basename)
-        # Sanitize invoice number for filename
         safe_invoice_num = "".join(c for c in str(invoice_number) if c.isalnum() or c in ("-", "_"))
         html_path = output_dir / f"{safe_invoice_num}_report.html"
         json_path = output_dir / f"{safe_invoice_num}_report.json"
         
-        # Save HTML and JSON
         html_path.write_text(html, encoding="utf-8")
         try:
             json_path.write_text(json.dumps(sys_json, ensure_ascii=False, indent=2), encoding="utf-8")

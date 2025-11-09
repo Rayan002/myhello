@@ -1,186 +1,200 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice Validation Report - 01</title>
     <style>
-        /* Basic Reset & Font */
+        :root {
+            --text-dark: #222;
+            --text-medium: #333;
+            --bg-light: #f7f7f7;
+            --card-bg: #fff;
+            --border-light: #eee;
+
+            --approve-bg: #d4edda;
+            --approve-text: #155724;
+            --manual-bg: #fff3cd;
+            --manual-text: #856404;
+            --reject-bg: #f8d7da;
+            --reject-text: #721c24;
+        }
+
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-medium);
+            background-color: var(--bg-light);
             margin: 0;
             padding: 0;
-            background-color: #f7f7f7;
-            color: #333;
-            line-height: 1.6;
-            font-size: 15px; /* Base font size */
         }
 
-        /* Container for content */
-        .container {
-            max-width: 1000px; /* Max-width container */
-            margin: 20px auto;
-            padding: 0 20px; /* Generous padding for responsiveness */
+        .header-bar {
+            background-color: var(--text-dark);
+            color: var(--card-bg);
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        /* Header Styling */
-        header {
-            background-color: #fff;
-            padding: 20px 30px;
-            border-bottom: 1px solid #eee;
-            border-radius: 8px 8px 0 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-
-        header h1 {
+        .header-bar h1 {
             margin: 0;
-            font-size: 26px;
-            color: #222;
+            font-size: 28px;
+            font-weight: 600;
         }
 
-        /* Card-like sections */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
         .card {
-            background-color: #fff;
-            padding: 30px;
-            margin-bottom: 20px;
+            background-color: var(--card-bg);
+            padding: 25px 30px;
+            margin-bottom: 25px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
-        /* Section Headings */
         h2 {
-            font-size: 20px;
-            color: #222;
+            font-size: 22px;
+            color: var(--text-dark);
             margin-top: 0;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #eee; /* Subtle bottom border */
+            border-bottom: 1px solid var(--border-light);
         }
 
-        /* Lists */
+        h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 1em;
+        }
+
         ul {
             list-style-type: disc;
-            margin: 0;
-            padding-left: 20px;
+            margin: 0 0 1em 20px;
+            padding: 0;
         }
 
-        ul.key-info-list {
-            list-style-type: none;
-            padding-left: 0;
+        li {
+            margin-bottom: 0.5em;
         }
 
-        ul li {
-            margin-bottom: 8px;
-        }
-
-        /* Status Badges */
-        .status-badge {
+        .badge {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 5px;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 16px;
             text-align: center;
             margin-top: 10px;
-            font-size: 16px;
         }
 
-        .approve {
-            background-color: #d4edda; /* Light green */
-            color: #155724; /* Dark green */
+        .badge-approve {
+            background-color: var(--approve-bg);
+            color: var(--approve-text);
         }
 
-        .manual-review {
-            background-color: #fff3cd; /* Light amber */
-            color: #856404; /* Dark amber */
+        .badge-manual {
+            background-color: var(--manual-bg);
+            color: var(--manual-text);
         }
 
-        .reject {
-            background-color: #f8d7da; /* Light red */
-            color: #721c24; /* Dark red */
+        .badge-reject {
+            background-color: var(--reject-bg);
+            color: var(--reject-text);
         }
 
-        /* Responsive adjustments */
+        .key-info-list p {
+            margin-bottom: 0.5em;
+            font-size: 15px;
+        }
+
+        .key-info-list strong {
+            display: inline-block;
+            min-width: 120px; /* Align values */
+        }
+
         @media (max-width: 768px) {
-            body {
-                font-size: 14px;
+            .header-bar h1 {
+                font-size: 24px;
             }
             .container {
-                margin: 10px auto;
                 padding: 0 15px;
-            }
-            header {
-                padding: 15px 20px;
-            }
-            header h1 {
-                font-size: 22px;
             }
             .card {
                 padding: 20px;
             }
             h2 {
-                font-size: 18px;
+                font-size: 20px;
             }
-            .status-badge {
-                padding: 8px 15px;
+            .badge {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+            body {
                 font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
+    <div class="header-bar">
+        <h1>Invoice Validation Report - 01</h1>
+    </div>
+
     <div class="container">
-        <header>
-            <h1>Invoice Validation Report - 01</h1>
-        </header>
-        <main>
-            <section class="card overall-recommendation">
-                <h2>Overall Recommendation</h2>
-                <div class="status-badge manual-review">Manual Review</div>
-            </section>
+        <div class="card">
+            <h2>Overall Recommendation</h2>
+            <p>Based on the validation rules, the recommendation for this invoice is:</p>
+            <div class="badge badge-manual">Manual Review</div>
+        </div>
 
-            <section class="card">
-                <h2>Overview</h2>
-                <p>Invoice 01 shows a unit price mismatch on Line 1 for SKU-002, with the invoice price of 3.5 differing from the PO price of 3.0 by 16.67%. No missing fields or other discrepancies were identified, and the translation confidence is high at 0.95. Despite the high confidence, the price discrepancy necessitates a manual review.</p>
-            </section>
+        <div class="card">
+            <h2>Overview</h2>
+            <p>Invoice 01 has a high translation confidence of 0.95. However, a significant discrepancy was identified: a unit price mismatch for 'SKU-002' on Line 1, where the invoice price (3.5) differs from the PO price (3.0) by 16.67%. No missing required fields were found. Due to this unit price discrepancy, the invoice requires manual review.</p>
+        </div>
 
-            <section class="card">
-                <h2>Key Information</h2>
-                <ul class="key-info-list">
-                    <li><strong>Invoice Number:</strong> INV-1001</li>
-                    <li><strong>Invoice Date:</strong> 2025-03-14</li>
-                    <li><strong>Vendor Name:</strong> Global Logistics Ltd</li>
-                    <li><strong>Total:</strong> USD 1617.0</li>
-                    <li><strong>PO Number:</strong> PO-1001</li>
-                </ul>
-            </section>
+        <div class="card">
+            <h2>Key Information</h2>
+            <div class="key-info-list">
+                <p><strong>Invoice Number:</strong> INV-1001</p>
+                <p><strong>Invoice Date:</strong> 2025-03-14</p>
+                <p><strong>Vendor Name:</strong> Global Logistics Ltd</p>
+                <p><strong>Total:</strong> USD 1617.00</p>
+                <p><strong>PO Number:</strong> PO-1001</p>
+            </div>
+        </div>
 
-            <section class="card">
-                <h2>Issues Identified</h2>
-                <ul>
-                    <li>Line 1: Unit price mismatch for SKU-002 (Inv: 3.5, PO: 3.0, Diff: 16.67%)</li>
-                </ul>
-            </section>
+        <div class="card">
+            <h2>Issues</h2>
+            <ul>
+                <li>Line 1: Unit price mismatch for 'SKU-002' (Inv: 3.5, PO: 3.0, Diff: 16.67%)</li>
+            </ul>
+        </div>
 
-            <section class="card">
-                <h2>Discrepancy Summary</h2>
-                <ul>
-                    <li>No discrepancies</li>
-                </ul>
-            </section>
+        <div class="card">
+            <h2>Discrepancy Summary</h2>
+            <p>No discrepancies.</p>
+        </div>
 
-            <section class="card">
-                <h2>Missing Fields</h2>
-                <ul>
-                    <li>All fields present</li>
-                </ul>
-            </section>
+        <div class="card">
+            <h2>Missing Fields</h2>
+            <p>All fields present.</p>
+        </div>
 
-            <section class="card">
-                <h2>Translation Confidence</h2>
-                <p>95%</p>
-            </section>
-        </main>
+        <div class="card">
+            <h2>Translation Confidence</h2>
+            <p>The system's confidence in the translation of the invoice data is: <strong>95%</strong></p>
+        </div>
     </div>
 </body>
 </html>

@@ -1,7 +1,3 @@
-"""
-Translation Agent - Uses LLM with structured output to translate invoice data to English.
-Returns the same schema as extraction but with text fields translated.
-"""
 import json
 import os
 from typing import Dict, List, Optional
@@ -9,7 +5,6 @@ from pydantic import BaseModel, Field
 
 
 class LineItem(BaseModel):
-    """Line item structure"""
     item_code: Optional[str] = Field(description="Item code (e.g., SKU-001)")
     description: Optional[str] = Field(description="Item description (translated to English)")
     qty: Optional[float] = Field(description="Quantity (number, unchanged)")
@@ -18,7 +13,6 @@ class LineItem(BaseModel):
 
 
 class TranslatedInvoice(BaseModel):
-    """Translated invoice with same schema as extraction."""
     invoice_number: Optional[str] = Field(description="Invoice number (unchanged, e.g., INV-1001)")
     invoice_date: Optional[str] = Field(description="Invoice date in YYYY-MM-DD format (unchanged)")
     vendor_name: Optional[str] = Field(description="Vendor name (translated to English)")
@@ -31,27 +25,22 @@ class TranslatedInvoice(BaseModel):
 
 
 class TranslationResult(BaseModel):
-    """Structured translation output."""
     language: str = Field(description="Detected language code")
     confidence: float = Field(description="Translation confidence (0.0 to 1.0)", ge=0.0, le=1.0)
     translated_invoice: TranslatedInvoice = Field(description="Translated invoice data with same schema as extraction")
 
 
 def _build_chain():
-    """Build translation chain with structured output."""
-    from langchain_google_genai import ChatGoogleGenerativeAI  # type: ignore
-    from langchain_core.prompts import ChatPromptTemplate  # type: ignore
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain_core.prompts import ChatPromptTemplate
     from dotenv import load_dotenv
 
     load_dotenv()
-    
     if not os.getenv("GOOGLE_API_KEY"):
         raise RuntimeError("GOOGLE_API_KEY is not set. Provide it in the Streamlit sidebar.")
 
     model_name = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
     llm = ChatGoogleGenerativeAI(model=model_name, temperature=0)
-    
-    # Use structured output for guaranteed JSON parsing
     structured_llm = llm.with_structured_output(TranslationResult)
 
     prompt = ChatPromptTemplate.from_messages(
@@ -80,19 +69,15 @@ def _build_chain():
 
 
 def translate_extractions_with_llm(extracted: List[Dict]) -> List[Dict]:
-    """Translate extracted invoice data to English using structured output.
-    Returns the same JSON schema but with text fields translated to English.
-    """
     if not extracted:
         return []
 
     chain = _build_chain()
-    output: List[Dict] = []
+    output = []
     
     for item in extracted:
         content = item.get("extraction") or {}
         
-        # If extraction is empty, skip translation
         if not content:
             output.append({**item, "translation": {
                 "language": "en",
@@ -102,36 +87,24 @@ def translate_extractions_with_llm(extracted: List[Dict]) -> List[Dict]:
             continue
         
         try:
-            # Pass extraction JSON directly to LLM
             input_json = json.dumps(content, ensure_ascii=False, indent=2)
-            
-            # Structured output returns Pydantic model directly
             result = chain.invoke({"input_json": input_json})
-            
-            # Convert to dict
             parsed = result.model_dump() if hasattr(result, "model_dump") else result.dict()
             
-            # Extract translated_invoice from result
             translated_invoice = parsed.get("translated_invoice", {})
-            if isinstance(translated_invoice, dict):
-                # Convert Pydantic model to dict if needed
-                if hasattr(translated_invoice, "model_dump"):
-                    translated_invoice = translated_invoice.model_dump()
+            if isinstance(translated_invoice, dict) and hasattr(translated_invoice, "model_dump"):
+                translated_invoice = translated_invoice.model_dump()
             
-            # Store both language/confidence and the translated invoice
             output.append({
                 **item,
                 "translation": {
                     "language": parsed.get("language", "en"),
-                    "confidence": parsed.get("confidence",0.5),
+                    "confidence": parsed.get("confidence", 0.5),
                     "translated_invoice": translated_invoice,
-                    # For backward compatibility, also store as text_en (JSON string)
                     "text_en": json.dumps(translated_invoice, ensure_ascii=False, indent=2),
                 }
             })
-                
         except Exception as exc:
-            # On error, return original extraction with language marked as unknown
             output.append({
                 **item,
                 "translation": {

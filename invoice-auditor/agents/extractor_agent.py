@@ -1,6 +1,3 @@
-"""
-Invoice Extractor Agent - Uses LLM with structured output to extract invoice data.
-"""
 import json
 import os
 from pathlib import Path
@@ -9,7 +6,6 @@ from pydantic import BaseModel, Field
 
 
 class LineItem(BaseModel):
-    """Line item structure."""
     item_code: str = Field(description="Item code (e.g., SKU-001)")
     description: str = Field(description="Item description")
     qty: float = Field(description="Quantity (number, not string)")
@@ -18,7 +14,6 @@ class LineItem(BaseModel):
 
 
 class InvoiceExtraction(BaseModel):
-    """Structured invoice extraction output."""
     invoice_number: Optional[str] = Field(description="Invoice number (e.g., INV-1001)")
     invoice_date: Optional[str] = Field(description="Invoice date in YYYY-MM-DD format")
     vendor_name: Optional[str] = Field(description="Vendor name")
@@ -31,11 +26,9 @@ class InvoiceExtraction(BaseModel):
 
 
 def _text_from_path(path: Path) -> str:
-    """Extract text from various file types (PDF, DOCX, images)."""
     sfx = path.suffix.lower()
     
     if sfx == ".pdf":
-        # Try pdfminer.six first for robust extraction
         try:
             from pdfminer.high_level import extract_text
             text = extract_text(str(path)) or ""
@@ -44,7 +37,6 @@ def _text_from_path(path: Path) -> str:
         except Exception:
             pass
         
-        # Fallback to PyPDF2
         try:
             from PyPDF2 import PdfReader
             reader = PdfReader(str(path))
@@ -75,7 +67,6 @@ def _text_from_path(path: Path) -> str:
         except Exception:
             return ""
     
-    # Fallback to text file
     try:
         return path.read_text(encoding="utf-8")
     except Exception:
@@ -83,9 +74,8 @@ def _text_from_path(path: Path) -> str:
 
 
 def _build_chain():
-    """Build extraction chain with structured output."""
-    from langchain_google_genai import ChatGoogleGenerativeAI  # type: ignore
-    from langchain_core.prompts import ChatPromptTemplate  # type: ignore
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain_core.prompts import ChatPromptTemplate
     from dotenv import load_dotenv
 
     load_dotenv()
@@ -94,8 +84,6 @@ def _build_chain():
 
     model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     llm = ChatGoogleGenerativeAI(model=model_name, temperature=0)
-
-    # Use structured output for guaranteed JSON parsing
     structured_llm = llm.with_structured_output(InvoiceExtraction)
 
     prompt = ChatPromptTemplate.from_messages(
@@ -122,43 +110,33 @@ def _build_chain():
 
 
 def _normalize_extraction_fields(extraction: Dict) -> Dict:
-    """Normalize field names to match validation expectations (for backward compatibility)."""
     if not isinstance(extraction, dict):
         return {}
     
     normalized = extraction.copy()
     
-    # Normalize line items field names
     if "line_items" in normalized:
         normalized_line_items = []
         for item in normalized["line_items"]:
             if not isinstance(item, dict):
                 continue
             normalized_item = item.copy()
-            
-            # Map quantity -> qty
             if "quantity" in normalized_item and "qty" not in normalized_item:
                 normalized_item["qty"] = normalized_item.pop("quantity")
-            
-            # Map unit -> unit_price
             if "unit" in normalized_item and "unit_price" not in normalized_item:
                 normalized_item["unit_price"] = normalized_item.pop("unit")
-            
-            # Map code -> item_code
             if "code" in normalized_item and "item_code" not in normalized_item:
                 normalized_item["item_code"] = normalized_item.pop("code")
             
             normalized_line_items.append(normalized_item)
         normalized["line_items"] = normalized_line_items
     
-    # Normalize PO number field
     if "po_number" not in normalized:
         for po_field in ["po", "po_reference", "purchase_order"]:
             if po_field in normalized:
                 normalized["po_number"] = normalized.pop(po_field)
                 break
     
-    # Ensure numeric fields are floats
     if "total" in normalized:
         try:
             normalized["total"] = float(normalized["total"])
@@ -177,18 +155,13 @@ def _normalize_extraction_fields(extraction: Dict) -> Dict:
 
 
 def extract_invoices_with_llm(monitor_results: List[Dict]) -> List[Dict]:
-    """
-    Extract structured invoice data from monitor results using structured output.
-    Processes one file at a time with its metadata.
-    """
     if not monitor_results:
         return []
 
     chain = _build_chain()
-    outputs: List[Dict] = []
+    outputs = []
     
     for item in monitor_results:
-        # Read file and extract text
         file_path = item.get("file_path")
         metadata_path = item.get("metadata_path")
         
@@ -196,7 +169,6 @@ def extract_invoices_with_llm(monitor_results: List[Dict]) -> List[Dict]:
         if file_path:
             txt = _text_from_path(Path(file_path)).strip()
         
-        # Read metadata from metadata_path
         metadata = {}
         if metadata_path:
             try:
@@ -205,17 +177,11 @@ def extract_invoices_with_llm(monitor_results: List[Dict]) -> List[Dict]:
                 metadata = {}
 
         try:
-            # Structured output returns Pydantic model directly
             result = chain.invoke({"invoice_text": txt})
-            
-            # Convert Pydantic model to dict
             parsed = result.model_dump() if hasattr(result, "model_dump") else result.dict()
-            
-        except Exception as exc:
-            # On error, return empty extraction
+        except Exception:
             parsed = {}
         
-        # Normalize field names for backward compatibility
         parsed = _normalize_extraction_fields(parsed)
 
         outputs.append(

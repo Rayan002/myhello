@@ -1,24 +1,11 @@
-"""
-Report HTML Generation Agent - Uses LLM to generate human-readable HTML report.
-"""
 import os
 from typing import Any, Dict
 from dotenv import load_dotenv
 
 
 def generate_html_report(basename: str, extraction: Dict[str, Any], system_json: Dict[str, Any]) -> str:
-    """Generate an HTML report string using an LLM.
-
-    Args:
-        basename: File basename or invoice identifier for title
-        extraction: Translated invoice JSON used to show key fields
-        system_json: SystemReport JSON (overview, recommendation, discrepancies, issues, etc.)
-
-    Returns:
-        HTML string
-    """
-    from langchain_google_genai import ChatGoogleGenerativeAI  # type: ignore
-    from langchain_core.prompts import ChatPromptTemplate  # type: ignore
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain_core.prompts import ChatPromptTemplate
 
     load_dotenv()
     model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
@@ -63,7 +50,6 @@ def generate_html_report(basename: str, extraction: Dict[str, Any], system_json:
         "extraction": extraction
     })
 
-    # Some models return a Message object; normalize to string
     if hasattr(html, "content"):
         return str(getattr(html, "content"))
     return str(html)

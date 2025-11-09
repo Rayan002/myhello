@@ -1,7 +1,3 @@
-"""
-Business Validation - Prompt-based JSON echo with appended business_validation.
-The prompt enforces deterministic ERP comparison logic (no fallback code paths).
-"""
 import json
 import urllib.error
 import urllib.request
@@ -12,7 +8,6 @@ from dotenv import load_dotenv
 
 
 def _http_get_json(url: str, timeout: int = 5) -> Dict[str, Any]:
-    """Make HTTP GET request and return JSON response."""
     try:
         with urllib.request.urlopen(url, timeout=timeout) as resp:
             return json.loads(resp.read().decode("utf-8"))
@@ -42,7 +37,7 @@ def _load_sku_master() -> Any:
 
 
 def _build_stage2_prompt():
-    from langchain_core.prompts import PromptTemplate  # type: ignore
+    from langchain_core.prompts import PromptTemplate
     return PromptTemplate.from_template(
         (
             "\nYou are performing Stage 2 Invoice Business Validation.\n\n"
@@ -84,8 +79,8 @@ def _build_stage2_prompt():
 
 
 def _validate_business_with_llm_echo(translated_invoice: Dict[str, Any], po_data: Dict[str, Any], vendor: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    from langchain_google_genai import ChatGoogleGenerativeAI  # type: ignore
-    from langchain_core.output_parsers import JsonOutputParser  # type: ignore
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain_core.output_parsers import JsonOutputParser
     load_dotenv()
     model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     llm = ChatGoogleGenerativeAI(model=model, temperature=0, max_retries=2)
@@ -114,12 +109,10 @@ def _validate_business_with_llm_echo(translated_invoice: Dict[str, Any], po_data
 
 
 def validate_business_rules_agent(translated_invoice: Dict[str, Any], erp_base_url: str = "http://localhost:8000") -> Dict[str, Any]:
-    """Stage 2 validation: returns the echoed invoice JSON with appended `business_validation`."""
     load_dotenv()
     if not os.getenv("GOOGLE_API_KEY"):
         raise RuntimeError("GOOGLE_API_KEY is required for business validation")
 
-    # Extract PO number directly from translated invoice dict
     po_number = translated_invoice.get("po_number") or translated_invoice.get("po_reference")
     po_data = _http_get_json(f"{erp_base_url}/po/{po_number}", timeout=3) if po_number else {"error": "PO not found"}
     rules = _load_rules() or {}
